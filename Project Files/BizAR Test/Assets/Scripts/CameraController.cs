@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
+    PlayerInputActions _playerControls;
+    InputAction _mouseDelta;
+    
     [Header("Camera Sensitivity Values")]
     [SerializeField] float _horizontalSensitivity;
     [SerializeField] float _verticalSensitivity;
@@ -17,6 +21,22 @@ public class CameraController : MonoBehaviour
 
     public bool CameraEnabled { get => _cameraEnabled; set => _cameraEnabled = value; }
 
+    private void Awake()
+    {
+        _playerControls = new PlayerInputActions();
+    }
+    private void OnEnable()
+    {
+        //Initialize the new input system for the mouse delta from the Look Action
+        _mouseDelta = _playerControls.Player.Look;
+        _mouseDelta.Enable();
+        
+    }
+    private void OnDisable()
+    {
+        //disable the input actions to prevent memory leaks
+        _mouseDelta.Disable();
+    }
     // Start is called before the first frame update
     private void Start()
     {
@@ -36,13 +56,16 @@ public class CameraController : MonoBehaviour
 
     private void ReadPlayerInput()
     {
-        //Get the current coordinates of the mouse cursor.
-        _mouseX = Input.GetAxisRaw("Mouse X");
-        _mouseY = Input.GetAxisRaw("Mouse Y");
+        
+        //Get the delta values from the mouse delta Vector given by the input system.
+        Vector2 mouseDelta = _mouseDelta.ReadValue<Vector2>();
 
-        //Increment the yRotation variable by the horizontal mouse position multiplied by the sensitivity and the time elapsed. 
-        _yRotation += _mouseX * _horizontalSensitivity * 0.1f;
-        _xRotation -= _mouseY * _verticalSensitivity * 0.1f;
+        _mouseX = mouseDelta.x;
+        _mouseY = mouseDelta.y;
+
+        //Increment the yRotation variable by the horizontal mouse position multiplied by the sensitivity and the time between frames. 
+        _yRotation += _mouseX * _horizontalSensitivity * Time.deltaTime;
+        _xRotation -= _mouseY * _verticalSensitivity * Time.deltaTime;
 
         //Clamp the xRotation so it does not exceed 90 degrees. 
         _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);

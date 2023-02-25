@@ -103,7 +103,7 @@ public class PlayerController : MonoBehaviour
     {
         //Apply a force to the player rigidbody to accelarate it in the current input move direction.
         //Scale the moveDirection vector by the _moveSpeed value to control the speed.
-        _rigidBody.AddForce(_moveDirection.normalized * _moveSpeed, ForceMode.Acceleration);
+        _rigidBody.AddForce(_moveDirection.normalized * _moveSpeed * _moveSpeedMultiplier, ForceMode.Acceleration);
     }
 
     private void OnTriggerEnter(Collider other) {
