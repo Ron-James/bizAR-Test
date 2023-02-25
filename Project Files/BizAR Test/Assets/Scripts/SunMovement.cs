@@ -42,6 +42,7 @@ public class SunMovement : MonoBehaviour
             //Else, calculate the suns current rotation on the X axis using the animation curve 
             //which is evalutated at the timeRatio and multiplied by the xRotationDelta variable.
             //Set the sun's local euler angles to a new vector3 which has the x value set to the current angle calculated.
+            //Rotate the light source so that it is facing the origin.
             //Increment the time variable by the time elapsed and yield.
             else
             {
